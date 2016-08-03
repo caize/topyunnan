@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>{$detail.title}</title>
+    <meta name="keyword" content="{$detail.keyword}" />
+    <meta name="description" content="{$detail.description}" />
+    {include file="public/style" /}
+</head>
+
+<body>
+    <!-- 头部 -->
+    {include file="public/header" /}
+    <!-- 内容区 -->
+    <div class="zwa_con">
+        <h1>{$detail.title}</h1>
+        <h3>作者:{$detail.author}/日期:{$detail.time}</h3>
+        <!-- 富文本 -->
+        <div class="zwa_conhtml">
+            <div class="text clear" id="contentText">
+                <p id="mpCover" > <img id="coverImg" src="{$detail.thumb}"> </p>
+                <p>{$detail.content}</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

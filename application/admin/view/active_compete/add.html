@@ -1,0 +1,204 @@
+{extend name="base:base" /}
+{block name="style"}
+<style>
+    .input-label{
+        width:500px;
+    }
+    .zyupload {
+        margin:0;
+    }
+    #zyupload{
+        /*min-height: 1px;height: 1px;*/
+    }
+
+    .upload_preview {
+        width: 657px;
+    }
+</style>
+{/block}
+{block name="content"}
+<div class="page-content" id="addCompete">
+    <!-- Page Breadcrumb -->
+    <div class="page-breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="#">控制面板</a>
+            </li>
+            <li>
+                <a href="#">活动</a>
+            </li>
+            <li class="active">参赛人添加</li>
+        </ul>
+    </div>
+    <!-- /Page Breadcrumb -->
+    <!-- Page Header -->
+    <div class="page-header position-relative">
+        <div class="header-title">
+            <h1>
+                参赛人添加
+            </h1>
+        </div>
+        <!--Header Buttons-->
+        <div class="header-buttons">
+            <a class="sidebar-toggler" href="#">
+                <i class="fa fa-arrows-h"></i>
+            </a>
+            <a class="refresh" id="refresh-toggler" href="">
+                <i class="glyphicon glyphicon-refresh"></i>
+            </a>
+            <a class="fullscreen" id="fullscreen-toggler" href="#">
+                <i class="glyphicon glyphicon-fullscreen"></i>
+            </a>
+        </div>
+        <!--Header Buttons End-->
+    </div>
+    <!-- /Page Header -->
+    <!-- Page Body -->
+    <div class="page-body">
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget flat radius-bordered">
+                    <div class="widget-header bordered-bottom bordered-themeprimary">
+                        <span class="widget-caption">参赛人添加</span>
+                        <div class="widget-buttons">
+                            <a href="#" data-toggle="maximize">
+                                <i class="fa fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="widget-body">
+                        <div id="horizontal-form">
+                        <validator name="addCompeteValidation">
+                            <form class="form-horizontal" role="form" novalidate>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">活动</label>
+                                    <div class="col-sm-10">
+                                          <select id="e1" name="active_id" class="input-label" v-model="compete.active_id" v-validate:active_id="{ required: true}"> 
+                                                <option value="" selected="true" />请选择活动 
+                                             {volist name="actives" id="vo"}
+                                                <option value="{$vo.id}" />{$vo.name}
+                                             {/volist}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">姓名</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control input-label" name="name" placeholder="姓名" v-validate:name="{ required: true, minlength: 0, maxlength: 3}" v-model="compete.name" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">电话</label>
+                                    <div class="col-sm-10">
+                                        <input type="tel" class="form-control input-label" name="phone" placeholder="电话" v-validate:phone="{ required: true,minlength:11,maxlength:11}" v-model="compete.phone" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">排序</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control input-label" name="sort" placeholder="排序" v-validate:sort="{ required: true}" v-model="compete.sort" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">图片上传</label>
+                                    <div class="col-sm-10">
+                                        <div style="width:1024px">
+                                        {include file="upload/upload" /}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                   <label for="input" class="col-sm-2 control-label no-padding-right">活动内容</label>
+                                    <div class="col-sm-10">
+                                      <script id="editor" type="text/plain" style="width:1024px;height:500px;"></script>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button @click="addArticle()"   type="button" class="btn btn-blue">保 存</button>
+                                    </div>
+                                </div>
+                            </form>
+                            </validator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Body -->
+</div>
+{/block}
+{block name="script"}
+    <script type="text/javascript" charset="utf-8" src="/static/js/baiduediter/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/static/js/baiduediter/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/static/js/baiduediter/lang/zh-cn/zh-cn.js"></script>
+    <script>
+    $(function(argument) {
+    //实例化编辑器
+    //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+    UE.getEditor('editor');
+    var vn = new Vue({
+        el: '#addCompete',
+        data: {
+            compete: {},
+            img:[]
+        },
+        created: function () {
+        },
+        methods: {
+            addArticle: function () {
+                this.compete.thumb = this.img[0]
+                this.compete.gallery = this.img
+                // //对编辑器的操作最好在编辑器ready之后再做
+                this.compete.content = UE.getEditor('editor').execCommand( "getlocaldata" );
+                $.ajax({
+                    type: "POST",
+                    url: '{:url("admin/activeCompete/add")}',
+                    dataType: 'json',
+                    cache: false,
+                    data: this.compete,
+                    success: function(data) {
+                        if(data.status>0){
+                           window.success({msg:'添加成功',url:"{:url('admin/activeCompete/index')}"});
+                        }else{
+                           window.error({msg:data.msg});
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('系统错误');
+                    }
+                });
+            }
+        }
+        })
+    $("#upload-input").fileinput({
+            maxFileCount: 4, //表示允许同时上传的最大文件个数
+            // allowedFileExtensions: ["jpg", "png", "gif"],
+            uploadUrl: "/admin/upload/upload/id/compete.html",
+            // your upload server url
+            // overwriteInitial:false,
+            language: 'zh',
+            // enctype: 'multipart/form-data',
+            uploadAsync: false,
+            overwriteInitial: false,
+            // showPreview: false,
+            allowedFileExtensions: ['jpg', 'png', 'gif'],
+            // uploadAsync:false,
+            uploadExtraData: {
+                img_key: "1000",
+                img_keywords: "happy, nature",
+            }
+        }).on('filebatchuploadsuccess', function(event, data) {
+            var out = [];
+            response = data.response;
+            $.each(data.files, function(key, file) {
+                var fname = response[key].file;
+                out.push(fname);
+            });
+            vn.$set('img',out);
+        });
+    });
+    </script>
+{/block}

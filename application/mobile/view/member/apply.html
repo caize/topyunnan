@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>我的报名</title>
+    {include file="public/style" /}
+    <style type="text/css">
+        img {
+            height: 70px;
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body style="background-color: #F4F4F4;" id="apply">
+    <div class="userbm">
+        <div class="userbm_list">
+        {volist name="apply" id="vo"}
+            <div class="userbm_item">
+                <div class="ubi_l">
+                    <img src="{$vo.thumb}" alt="{$vo.name}">
+                </div>
+                <div class="ubi_r">
+                    <div class="ubi_sta">
+                        <span>{$vo.ispass}</span>
+                    </div>
+                    <div class="ubi_desc">
+                        <p>活动：{$vo->parent[0]['name']}</p>
+                        <p>开始时间：{$vo->parent[0]['start_time']}</p>
+                        <p>结束时间：{$vo->parent[0]['end_time']}</p>
+                    </div>
+                    <div class="ubi_btn" onclick=window.location.href="{:url('mobile/index/toApply',['id'=>$vo->parent[0]['id']])}">
+                        <div class="">详情</div>
+                    </div>
+                </div>
+            </div>
+        {/volist}
+        </div>
+    </div>
+    <script>
+    </script>
+</body>
+<script>
+   var vn = new Vue({
+    el: '#apply',
+    methods: {
+      delVote: function(id,cid,ticket){
+        layer.open({
+            content: '你取消投票？',
+            btn: ['确认', '取消'],
+            shadeClose: true,
+            yes: function(index){
+                $.ajax({
+                    type: "POST",
+                    url: '{:url("mobile/member/delVote")}',
+                    dataType: 'json',
+                    cache: false,
+                    data: {id:id,cid:cid,ticket:ticket},
+                    success: function(data) {
+                          if(data.status > 0){
+                            layer.msg('取消成功');
+                            location.reload();
+                            layer.close(index);
+                          }else{
+                              layer.msg(data.msg);
+                          }
+                    },
+                    error: function(xhr, status, error) {
+                          layer.msg('系统错误');
+                    }
+                });
+            }, no: function(){
+                layer.msg('取消');
+            }
+        });
+      },
+    }
+  })
+</script>
+</html>

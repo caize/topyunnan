@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>{$con.mallName}</title>
+    <meta name="keywords" content="{$con.mallKeywords}" />
+    <meta name="description" content="{$con.mallDesc}" />
+    {include file="public/style" /}
+</head>
+
+<body>
+    <!-- 头部 -->
+    {include file="public/header" /}
+    <!-- 内容区 -->
+    <div class="zw_content">
+        <div class="zwc_banner">
+            {volist name="ad" id="vo"}
+            <img src="{$vo.file}" alt="{$vo.name}">
+            {/volist}
+        </div>
+        <!-- 近期活动 -->
+        <div class="zwc_arts">
+            <div class="zwcs_head">
+                <div class="zwcs_headt">
+                    近期活动
+                </div>
+                <div class="zwcs_more">
+                    <a href="{:url('mobile/active/index')}">
+                      更多&nbsp;<i class="fa fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="zwcs_list">
+              {volist name="actives" id="vo"}
+                <div class="zwcs_cs">
+                <!-- type = 1 报名  type = 2 投票 -->
+                    {if $vo.type == 1}
+                        <div onclick=window.location.href="{:url('/mobile/index/toApply',['id'=>$vo.id])}">
+                            <img src="{$vo.thumb}" alt="">
+                            <p>{$vo.name}</p>
+                        </div>
+                    {/if}
+                    {if $vo.type == 2}
+                        <div onclick=window.location.href="{:url('/mobile/index/toVote',['id'=>$vo.id])}">
+                            <img src="{$vo.thumb}" alt="">
+                            <p>{$vo.name}</p>
+                        </div>
+                    {/if}
+                </div>
+             {/volist}
+            </div>
+        </div>
+        <!-- 热门文章 -->
+        <div class="zwc_arts">
+            <div class="zwcs_head">
+                <div class="zwcs_headt">
+                    热门文章
+                </div>
+                <div class="zwcs_more">
+                    <a href="{:url('mobile/article/index')}">
+                        更多&nbsp;<i class="fa fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="zwcs_list">
+              {volist name="articles" id="vo"}
+                <div class="zwcs_cs">
+
+                    <div onclick=window.location.href="{:url('mobile/article/detail',['id'=>$vo.id])}">
+                        <img src="{$vo.thumb}" alt="">
+                        <p>{$vo.title}</p>
+                    </div>
+                </div>
+              {/volist}
+            </div>
+        </div>
+        {include file="public/footer" /}
+    </div>
+</body>
+</html>

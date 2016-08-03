@@ -1,0 +1,184 @@
+{extend name="base:base" /}
+{block name="style"}
+<link rel="stylesheet" type="text/css" href="/static/js/datetime/css/jquery-ui.css" />
+<style>
+    .input-label{
+        width:500px;
+    }
+    .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+    .ui-timepicker-div dl { text-align: left; }
+    .ui-timepicker-div dl dt { float: left; clear:left; padding: 0 0 0 5px; }
+    .ui-timepicker-div dl dd { margin: 0 10px 10px 45%; }
+    .ui-timepicker-div td { font-size: 90%; }
+    .ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
+
+    .ui-timepicker-rtl{ direction: rtl; }
+    .ui-timepicker-rtl dl { text-align: right; padding: 0 5px 0 0; }
+    .ui-timepicker-rtl dl dt{ float: right; clear: right; }
+    .ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }
+</style>
+{/block}
+{block name="content"}
+<div class="page-content" id="addAd">
+    <!-- Page Breadcrumb -->
+    <div class="page-breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="#">控制面板</a>
+            </li>
+            <li>
+                <a href="#">系统管理</a>
+            </li>
+            <li class="active">广告添加</li>
+        </ul>
+    </div>
+    <!-- /Page Breadcrumb -->
+    <!-- Page Header -->
+    <div class="page-header position-relative">
+        <div class="header-title">
+            <h1>
+                广告添加
+            </h1>
+        </div>
+        <!--Header Buttons-->
+        <div class="header-buttons">
+            <a class="sidebar-toggler" href="#">
+                <i class="fa fa-arrows-h"></i>
+            </a>
+            <a class="refresh" id="refresh-toggler" href="">
+                <i class="glyphicon glyphicon-refresh"></i>
+            </a>
+            <a class="fullscreen" id="fullscreen-toggler" href="#">
+                <i class="glyphicon glyphicon-fullscreen"></i>
+            </a>
+        </div>
+        <!--Header Buttons End-->
+    </div>
+    <!-- /Page Header -->
+    <!-- Page Body -->
+    <div class="page-body">
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-xs-12">
+                <div class="widget flat radius-bordered">
+                    <div class="widget-header bordered-bottom bordered-themeprimary">
+                        <span class="widget-caption">广告添加</span>
+                        <div class="widget-buttons">
+                            <a href="#" data-toggle="maximize">
+                                <i class="fa fa-expand"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="widget-body">
+                        <div id="horizontal-form">
+                        <validator name="addAdValidation">
+                            <form class="form-horizontal" role="form" novalidate>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">广告位置</label>
+                                    <div class="col-sm-10">
+                                        <select id="e1" name="positionId" class="input-label" v-validate:positionId="{ required: true}" v-model="ad.positionId">
+                                            <option value="" selected="true" />请选择分类
+                                            <option value="1" />手机首页广告
+                                            <option value="2" />手机活动广告
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">广告名称</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="name" class="form-control input-label"  placeholder="活动名称" v-validate:name="{ required: true}" v-model="ad.name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">开始时间</label>
+                                    <div class="col-sm-10">
+                                        <input name="act_start_time" type="text" class="text-box" placeholder="请选择活动开始时间" readonly="readonly" style="cursor:pointer;" v-model="ad.start_time" v-validate:start_time="{ required: true}" name="start_time"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">结束时间</label>
+                                    <div class="col-sm-10">
+                                        <input name="act_stop_time" type="text" class="text-box" placeholder="请选择活动结束时间"  readonly="readonly" style="cursor:pointer;"
+                                         v-model="ad.end_time" v-validate:end_time="{ required: true}" name="end_time"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">广告排序</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control input-label" name="sort" placeholder="广告排序" v-model="ad.sort" v-validate:sort="{ required: true}" value="255">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">广告链接</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control input-label" name="sort" placeholder="广告链接" v-model="ad.url" >
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input" class="col-sm-2 control-label no-padding-right">广告图片</label>
+                                    <div class="col-sm-10">
+                                        <img src="/static/load.png" style="width:300px;height: 100px;margin-top:10px ;" id="ad"  class="upload">
+                                        <input type="hidden" id="ad" v-model="ad.file"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <button @click="addAd()"  :disabled="$addAdValidation.invalid" type="button" class="btn btn-blue">保 存</button>
+                                    </div>
+                                </div>
+                            </form>
+                            </validator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Body -->
+</div>
+{/block}
+{block name="script"}
+    <script type="text/javascript" src="/static/js/datetime/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script type="text/javascript" src="/static/js/datetime/js/jquery.ui.datepicker-zh-CN.js"></script>
+    <script type="text/javascript" src="/static/js/datetime/js/jquery-ui-timepicker-addon.js"></script>
+    <script type="text/javascript" src="/static/js/datetime/js/jquery-ui-timepicker-zh-CN.js"></script>
+    <script src="/static/js/start.js" type="text/javascript"></script>
+    <script src="/static/js/uploadpic.js" type="text/javascript"></script>
+    <script>
+    window.onload=function(){
+        $( "input[name='act_start_time'],input[name='act_stop_time']" ).datetimepicker();
+        $("#edui1").css("z-index","1");
+    }
+    new Vue({
+        el: '#addAd',
+        data: {
+            ad: {},
+        },
+        created: function () {
+        },
+        methods: {
+            addAd: function () {
+                this.ad.file = $('#ad').attr('src');
+                console.log(this.ad);
+                    $.ajax({
+                        type: "POST",
+                        url: '{:url("admin/ad/add")}',
+                        dataType: 'json',
+                        cache: false,
+                        data:  this.ad,
+                        success: function(data) {
+                            if(data.status>0){
+                                window.success({msg:"添加成功",url:"{:url('Admin/ad/index')}"});
+                            }else{
+                               window.error({msg:data.msg});
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.log('系统错误');
+                        }
+                    });
+                }
+        }
+        })
+    </script>
+{/block}

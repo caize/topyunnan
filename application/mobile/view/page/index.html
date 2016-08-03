@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>最云南-{$page.title}</title>
+    {include file="public/style" /}
+    <script src="js/jquery.min.js"></script>
+    <script src="js/script.js"></script>
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+
+<body>
+     <!-- 头部 -->
+    {include file="public/header" /}
+    <!-- 内容区 -->
+    <div class="zwcon_con">
+        <h1>{$page.title}</h1>
+        <!-- 富文本 -->
+        <div class="zwcon_conhtml">
+            <div class="text clear" id="contentText">
+             {$page.content}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+

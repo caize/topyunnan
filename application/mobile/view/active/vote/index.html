@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>最云南</title>
+    {include file="public/style" /}
+</head>
+
+<body>
+        <!-- 头部 -->
+    {include file="public/header" /}
+    <!-- 内容区 -->
+    <div class="zwvbm_con">
+        <div class="zwvbm_img">
+            <img src="{$active.thumb}" alt="">
+            <div class="zwvbm_imgbl">
+                <img src="/mobile/img/bl.png" alt="">
+            </div>
+        </div>
+        <div class="zwvbm_cform">
+            <h1 class="bmtitle">
+                快来投票了，最美景区
+            </h1>
+            <div class="bm_de">
+               {$active.content}
+            </div>
+            <div class="bmcsq">
+                <h2>-------------&nbsp;投 票 区&nbsp;-------------</h2>
+            </div>
+            <form class="tpform">
+                <!-- 图片上传 -->
+                <div class="tplist">
+                  {volist name="compete" id="vo"}
+                    <div class="tpitem">
+                        <div class="tpimgbg" >
+                            <a href="{:url('mobile/Vote/index',['id'=>$vo.id])}">
+                                <img src="{$vo.thumb}" alt="">
+                            </a>
+                            <!-- <img src="$vo.thumb" alt=""> -->
+                        </div>
+                        
+                            <div class="tpdesc">
+                                <div class="titletps">
+                                    <h5 class="">{$vo.name}</h5>
+                                    <h6>共&nbsp;{$vo.ticket}&nbsp;票</h6>
+                                </div>
+                                <div class="btntp" onclick=window.location.href="{:url('mobile/Vote/index',['id'=>$vo.id])}">
+                                    投票
+                                </div>
+                            </div> 
+                    </div>
+                  {/volist}
+                </div>
+                <br>
+                <br>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

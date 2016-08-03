@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>最云南</title>
+    {include file="public/style" /}
+</head>
+
+<body>
+    <!-- 头部 -->
+    {include file="public/header" /}
+    <!-- 内容区 -->
+    <div class="zwvbm_con" id="apply">
+        <div class="zwvbm_img">
+            <img src="{$active.thumb}" alt="">
+            <div class="zwvbm_imgbl">
+                <img src="/mobile/img/bl.png" alt="">
+            </div>
+        </div>
+        <div class="zwvbm_cform">
+            <h1 class="bmtitle">
+                {$active.name}
+            </h1>
+            <div class="bm_de">
+                <h3>活动详情</h3>
+                <p>{$active.content}</p>
+            </div>
+            <div class="bmcsq">
+                <h2>-------------&nbsp;报名参赛&nbsp;-------------</h2>
+            </div>
+            <form class="bmform">
+            <input type="hidden" name="active_id" v-model="user.active_id" value="{$active.id}">
+                <div class="bmform_input">
+                    <input type="text" placeholder="&nbsp;姓名" name="name" v-model="user.name">
+                </div>
+                <div class="bmform_input">
+                    <input type="text" placeholder="&nbsp;手机" name="phone"  v-model="user.phone">
+                </div>
+                <div class="bmform_input">
+                    <textarea placeholder="&nbsp;简介" name="content" v-model="user.content"></textarea>
+                </div>
+                <!-- 图片上传 -->
+                <div class="bmimgs">
+                </div>
+                <div class="bmuploads">
+                    <label class="bmupload">
+                        <img src="/mobile/img/jia.png" alt="">
+                        <input id="bmfile" type="file" hidden name="imgFile" />
+                    </label>
+                </div>
+                <!-- 提交表单 -->
+                <div class="bmformbtn">
+                    <button type="button" @click="addApply()">提交/申请</button>
+                </div>
+                <p style="text-align: center;"><a href="">免责声明</a></p>
+                <br>
+                <br>
+                <br>
+            </form>
+        </div>
+    </div>
+  {include file="public/footer" /}
+    <script type="text/javascript">
+    var base64 = new Array(); //定义一数组
+    window.onload = function() {
+        var input = document.getElementById("bmfile");
+        // var result = document.getElementById("result");
+        if (typeof(FileReader) === 'undefined') {
+            result.innerHTML = "抱歉，你的浏览器不支持 FileReader，请使用现代浏览器操作！";
+            input.setAttribute('disabled', 'disabled');
+        } else {
+            input.addEventListener('change', readFile, false);
+        }
+    }
+    function readFile() {
+        var file = this.files[0];
+        //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件
+        if (!/image\/\w+/.test(file.type)) {
+            alert("请确保文件为图像类型");
+            return false;
+        }
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(e) {
+            base64 = this.result;
+            var img = '<div class="bmimg"><img src="' + base64 + '" alt=""><div class="imgdel">X</div></div>';
+            $(".bmimgs:last").append(img);
+            // vn.user.gallery.push(base64);
+        }
+    }
+    $(".bmimgs ").on("click", ".imgdel", function() {
+        $(this).parent().remove();
+    });
+    var vn = new Vue({
+            el: '#apply',
+            data:{
+                user:{gallery:[]}
+            },
+            created:function(){
+            },
+            methods: {
+                addApply:function(){
+                    if({$isMid}==0){
+                        layer.msg('登录了,才可以报名');
+                        return ;
+                    }
+                    if({$isApply}==1){
+                        layer.msg('您已经报名过了');
+                        return ;
+                    }
+                    jQuery.each(jQuery(".bmimgs img"), function(i, v){
+                        vn.user.gallery.push(jQuery(this).attr("src"));
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: '{:url("mobile/apply/apply")}',
+                        dataType: 'json',
+                        cache: false,
+                        data: this.user,
+                        success: function(data) {
+                            if(data.status > 0){
+                                layer.msg('报名成功');
+                                vn.$set('user',{});
+                                $(".bmimgs ").html('');
+                            }else{
+                                layer.msg(data.msg);
+                            }
+                        }
+                    })
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

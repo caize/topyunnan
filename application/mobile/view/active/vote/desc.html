@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-cn" style="overflow: scroll;">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>最云南-活动投票详情</title>
+    {include file="public/style" /}
+    <link rel="stylesheet" href="/mobile/css/custom.css">
+    <link href="/mobile/css/ionic.min.css" rel="stylesheet">
+    <script src="/mobile/js/ionic.bundle.min.js"></script>
+    <style>
+    .popup {
+        border-radius: 25px;
+    }
+    </style>
+</head>
+
+<body ng-app="myApp">
+    <!-- 头部 -->
+    {include file="public/header" /}
+    <div class="acttpdesc">
+        <div class="silder" ng-controller="SlideController">
+            <ion-slide-box active-slide="myActiveSlide">
+                {volist name="compete.gallery" id="vo"}
+                    <ion-slide><img src="{$vo.thumb}"></ion-slide>
+                {/volist}
+            </ion-slide-box>
+        </div>
+        <h2 id="name">{$compete.name}</h2>
+        <div class="atd_t" ng-controller="PopupCtrl">
+            <div class="tps">
+                <p>共 <span>{{ticket}}</span> 票</p>
+            </div>
+            <div class="tpbtn" ng-click="showConfirm()">投一票</div>
+            <input type="hidden" name="activeTitle" value="{$active.name}">
+            <input type="hidden" name="competeId" value="{$compete.id}">
+        </div>
+        <div class="atd_con">
+           {$compete.content}
+        </div>
+    </div>
+    <script type="text/javascript">
+    var clickone = {$vote};//0：可以投票   1：已投过1次   -1：不可点击
+    var ticket = 1;
+    var app = angular.module("myApp", ["ionic"]);
+    // 轮播图
+    app.controller('SlideController', function($scope) {
+            $scope.myActiveSlide = 1;
+        })
+        .controller('PopupCtrl', function($scope, $ionicPopup, $ionicBackdrop, $timeout, $ionicLoading) {
+            //  confirm 对话框
+            $scope.name = $('#name').html();
+            $scope.ticket = {$compete.ticket}>0?{$compete.ticket}:0;
+            $scope.showConfirm = function() {
+                if({$ismid}==0){
+                    layer.msg('请先登录');
+                    return;
+                }
+                if (clickone == 1) {
+                   layer.msg('只能投票一次');
+                    return;
+                } else if (clickone == -1) {
+                    return;
+                }
+                clickone = -1;
+
+                $(".tpbtn").css("box-shadow", "0px 0px 1px #444");
+                $(".tpbtn").css("margin-top", "6px");
+                $timeout(function() {
+                    var confirmPopup = $ionicPopup.confirm({
+                        title: $("input[name ='activeTitle']").val(),
+                        template: '<h5 style="text-align: center;">投我一票吧！</h5><p style="color:#666;text-align: center;font-size:18px;">'+$scope.name+'</p>',
+                        buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
+                            text: '取消',
+                            type: 'button-default',
+                            onTap: function(e) {
+                                clickone = 0;
+                                console.log('再看看');
+                                $(".tpbtn").css("box-shadow", "0px 6px 1px #444");
+                                $(".tpbtn").css("margin-top", "0px");
+                            }
+                        }, {
+                            text: '确定',
+                            type: 'button-positive',
+                            onTap: function(e) {
+                                 $.ajax({
+                                    type: "POST",
+                                    url: '{:url("mobile/vote/add")}',
+                                    dataType: 'json',
+                                    cache: false,
+                                    data: {competeId:$("input[name = 'competeId']").val(),ticket:ticket},
+                                    success: function(data) {
+                                        $ionicBackdrop.retain();
+                                        //ajax回调
+                                        $timeout(function() {
+                                            if(data.status > 0){
+                                                clickone = 1;
+                                                $ionicLoading.show({
+                                                    template: '投票成功'
+                                                });
+                                                $timeout(function() {
+                                                    $ionicLoading.hide();
+                                                    $ionicBackdrop.release();
+                                                }, 800);
+                                                $scope.ticket = $scope.ticket + ticket;
+                                            }else{
+                                                clickone = 0;
+                                                $ionicLoading.show({
+                                                    template: '投票失败'
+                                                });
+                                                $timeout(function() {
+                                                        $ionicLoading.hide();
+                                                $ionicBackdrop.release();
+                                                $(".tpbtn").css("box-shadow","0px 6px 1px #444");
+                                                $(".tpbtn").css("margin-top","0px");
+                                                }, 800);                                                
+                                            }   
+                                        }, 800);
+                                    },
+                                    error: function(xhr, status, error) {
+                                    }
+                                });
+                            }
+                        }]
+                    });
+                }, 400);
+
+            };
+        });
+    </script>
+</body>
+
+</html>
