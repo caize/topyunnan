@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50547
 File Encoding         : 65001
 
-Date: 2016-07-27 11:06:21
+Date: 2016-08-03 15:27:22
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -453,4 +453,4 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('5', '14', 'admin', 'd86d1ee5812aed8c79d61288e92b6d8f', '', '', '127.0.0.1', '1469515947', '2130706433', '1', '1468292047', '1469515947');
+INSERT INTO `user` VALUES ('5', '14', 'admin', 'd86d1ee5812aed8c79d61288e92b6d8f', '', '', '127.0.0.1', '1469760646', '2130706433', '1', '1468292047', '1469760646');
